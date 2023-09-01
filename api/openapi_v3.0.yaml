@@ -1,0 +1,191 @@
+openapi: 3.0.3
+info:
+  title: Members
+  description: Members openapi specification.
+  termsOfService: ''
+  contact:
+    email: ''
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:3000
+    description: local
+tags:
+  - name: member
+    description: ''
+paths:
+  /v1/members:
+    get:
+      summary: List members
+      description: List members
+      operationId: get-members
+      tags:
+        - member
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/member-response'
+                description: members
+          description: OK
+    post:
+      summary: New member
+      description: New member
+      operationId: post-members
+      tags:
+        - member
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/member-request'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-response'
+          description: OK
+        '422':
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example1:
+                  value: >-
+                    member validation error: member name must between 3-50
+                    characters
+          description: Form validation error
+  /v1/members/{id}:
+    get:
+      summary: Find a member
+      description: Find a member by ID
+      operationId: get-member
+      tags:
+        - member
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-response'
+          description: OK
+        '404':
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example1:
+                  value: member not found
+          description: Not Found
+    delete:
+      summary: Delete a member
+      description: Delete a member
+      operationId: delete-member
+      tags:
+        - member
+      responses:
+        '204':
+          description: OK (No Content)
+        '404':
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example1:
+                  value: member not found
+          description: Not Found
+    put:
+      summary: Update a member
+      description: Update a member
+      operationId: put-member
+      tags:
+        - member
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/member-request'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/member-response'
+          description: OK
+        '404':
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example1:
+                  value: member not found
+          description: Not Found
+        '422':
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                example1:
+                  value: >-
+                    member validation error: member name must between 3-50
+                    characters
+          description: Form validation error
+    parameters:
+      - in: path
+        name: id
+        description: ''
+        schema:
+          type: string
+          format: uuid
+        required: true
+components:
+  schemas:
+    member-response:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 3
+          maxLength: 50
+        verified:
+          type: boolean
+        verified_at:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+        - verified
+        - verified_at
+    member-request:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 50
+        verified:
+          type: boolean
+      required:
+        - name
+        - verified
+  securitySchemes: {}
